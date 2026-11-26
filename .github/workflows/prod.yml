@@ -1,0 +1,36 @@
+name: 'PROD Docker Image'
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Builds each platform on a native runner of its own, arm64 without QEMU, and merges
+  # both into one manifest under every tag below.
+  multi:
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read
+      id-token: write # signs the provenance attestation
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      file: ./Dockerfile
+      meta-images: |
+        ghcr.io/senergy-platform/mgw-samsung-dc
+      meta-tags: |
+        type=raw,value=prod
+      meta-flavor: |
+        latest=false
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}

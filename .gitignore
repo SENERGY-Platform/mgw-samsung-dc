@@ -1,0 +1,8 @@
+# build output of `go build` (Dockerfile) and of `go build ./...` in the repo root
+/app
+/mgw-samsung-dc
+# JetBrains project files
+/.idea/
+*.iml
+# local credentials, client identity and run output of scripts/try-samsung.sh
+/.local/
